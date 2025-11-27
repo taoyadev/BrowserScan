@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+
 const workerOrigin = process.env.WORKER_ORIGIN;
 
 export async function POST(request: Request) {
