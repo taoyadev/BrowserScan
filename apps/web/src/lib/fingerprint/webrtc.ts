@@ -9,6 +9,18 @@ const STUN_SERVERS = [
   'stun:stun.cloudflare.com:3478'
 ];
 
+type RTCPeerConnectionType = typeof RTCPeerConnection;
+
+interface ExtendedWindow extends Window {
+  webkitRTCPeerConnection?: RTCPeerConnectionType;
+  mozRTCPeerConnection?: RTCPeerConnectionType;
+}
+
+function getRTCPeerConnection(): RTCPeerConnectionType | undefined {
+  const win = window as ExtendedWindow;
+  return window.RTCPeerConnection || win.webkitRTCPeerConnection || win.mozRTCPeerConnection;
+}
+
 export async function getWebRTCIPs(): Promise<string[]> {
   return new Promise((resolve) => {
     const ips = new Set<string>();
@@ -17,18 +29,15 @@ export async function getWebRTCIPs(): Promise<string[]> {
     }, 3000); // 3 second timeout
 
     try {
-      const RTCPeerConnection =
-        window.RTCPeerConnection ||
-        (window as Window & { webkitRTCPeerConnection?: typeof RTCPeerConnection }).webkitRTCPeerConnection ||
-        (window as Window & { mozRTCPeerConnection?: typeof RTCPeerConnection }).mozRTCPeerConnection;
+      const PeerConnection = getRTCPeerConnection();
 
-      if (!RTCPeerConnection) {
+      if (!PeerConnection) {
         clearTimeout(timeout);
         resolve([]);
         return;
       }
 
-      const pc = new RTCPeerConnection({
+      const pc = new PeerConnection({
         iceServers: STUN_SERVERS.map(url => ({ urls: url }))
       });
 
@@ -36,7 +45,7 @@ export async function getWebRTCIPs(): Promise<string[]> {
       pc.createDataChannel('');
 
       // Handle ICE candidates
-      pc.onicecandidate = (event) => {
+      pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
         if (!event.candidate) {
           // ICE gathering complete
           clearTimeout(timeout);
@@ -70,7 +79,7 @@ export async function getWebRTCIPs(): Promise<string[]> {
 
       // Create offer to start ICE gathering
       pc.createOffer()
-        .then(offer => pc.setLocalDescription(offer))
+        .then((offer: RTCSessionDescriptionInit) => pc.setLocalDescription(offer))
         .catch(() => {
           clearTimeout(timeout);
           pc.close();
@@ -88,12 +97,7 @@ export async function getWebRTCIPs(): Promise<string[]> {
  * Check if WebRTC is supported
  */
 export function isWebRTCSupported(): boolean {
-  const RTCPeerConnection =
-    window.RTCPeerConnection ||
-    (window as Window & { webkitRTCPeerConnection?: typeof RTCPeerConnection }).webkitRTCPeerConnection ||
-    (window as Window & { mozRTCPeerConnection?: typeof RTCPeerConnection }).mozRTCPeerConnection;
-
-  return !!RTCPeerConnection;
+  return !!getRTCPeerConnection();
 }
 
 /**
@@ -105,12 +109,8 @@ export function getWebRTCCapabilities(): {
   getUserMedia: boolean;
   getDisplayMedia: boolean;
 } {
-  const RTCPeerConnection =
-    window.RTCPeerConnection ||
-    (window as Window & { webkitRTCPeerConnection?: typeof RTCPeerConnection }).webkitRTCPeerConnection;
-
   return {
-    supported: !!RTCPeerConnection,
+    supported: !!getRTCPeerConnection(),
     mediaDevices: !!navigator.mediaDevices,
     getUserMedia: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
     getDisplayMedia: !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia)

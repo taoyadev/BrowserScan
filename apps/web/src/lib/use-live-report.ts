@@ -16,8 +16,8 @@ async function fetchScan(scanId: string): Promise<ScanReport> {
   const endpoint = workerOrigin ? `${workerOrigin}/api/scan/${scanId}` : `/api/scan/${scanId}`;
   const res = await fetch(endpoint, { cache: 'no-store' });
   if (!res.ok) throw new Error('Scan not found');
-  const json = await res.json();
-  return json.data as ScanReport;
+  const json = await res.json() as { data: ScanReport };
+  return json.data;
 }
 
 /**
@@ -28,8 +28,8 @@ async function fetchLatestReport(): Promise<ScanReport> {
     const endpoint = workerOrigin ? `${workerOrigin}/api/scan/latest` : '/api/scan/latest';
     const res = await fetch(endpoint, { cache: 'no-store' });
     if (!res.ok) throw new Error('Scan not ready');
-    const json = await res.json();
-    return json.data as ScanReport;
+    const json = await res.json() as { data: ScanReport };
+    return json.data;
   } catch (error) {
     console.warn('Falling back to sample report', error);
     return sampleReport;

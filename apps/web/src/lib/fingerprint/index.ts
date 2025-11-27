@@ -199,7 +199,7 @@ export async function performScan(apiBase: string = ''): Promise<{
     throw new Error('Failed to start scan');
   }
 
-  const startData = await startResponse.json();
+  const startData = await startResponse.json() as { data: { scan_id: string } };
   const { scan_id } = startData.data;
 
   // Step 2: Collect browser fingerprints
@@ -233,7 +233,7 @@ export async function performScan(apiBase: string = ''): Promise<{
     throw new Error('Failed to collect fingerprints');
   }
 
-  const collectData = await collectResponse.json();
+  const collectData = await collectResponse.json() as { data: unknown };
 
   return {
     scan_id,
