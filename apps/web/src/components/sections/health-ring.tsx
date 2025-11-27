@@ -106,7 +106,7 @@ export function HealthRing({ score, grade, verdict, isLoading }: HealthRingProps
               >
                 {grade}
               </motion.p>
-              <p className="text-xs uppercase tracking-[0.5em] text-zinc-500 mt-1">verdict</p>
+              <p className="text-xs uppercase tracking-[0.5em] text-zinc-500 mt-1">status</p>
               <motion.p
                 className="text-sm text-zinc-400"
                 initial={{ opacity: 0 }}
@@ -124,7 +124,7 @@ export function HealthRing({ score, grade, verdict, isLoading }: HealthRingProps
       <div className="text-center text-xs text-zinc-500">
         {isLoading
           ? 'Collecting browser fingerprints...'
-          : 'Score derived from BrowserScan Authority algorithm v1.0'
+          : 'Powered by BrowserScan Trust Algorithm'
         }
       </div>
     </div>

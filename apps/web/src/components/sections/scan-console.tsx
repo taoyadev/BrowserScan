@@ -62,7 +62,7 @@ export function ScanConsole({ isScanning = false }: ScanConsoleProps) {
     <div className="rounded-2xl border border-emerald-500/30 bg-black/60 p-4 font-mono text-xs text-emerald-300 backdrop-blur-sm">
       <div className="flex items-center gap-2">
         <div className={`h-2 w-2 rounded-full ${isScanning ? 'bg-emerald-500 animate-pulse' : 'bg-emerald-500'}`} />
-        <p className="text-emerald-400">[scan] BrowserScan Authority Routine v1.0</p>
+        <p className="text-emerald-400">[scan] BrowserScan Engine v1.0</p>
       </div>
       <div className="mt-2 h-28 overflow-hidden space-y-1">
         {isScanning ? (

@@ -20,11 +20,11 @@ export default function HomePage() {
 
   return (
     <PageShell
-      title="Authority Health Ring"
+      title="Browser Trust Score"
       subtitle={
         isScanning
-          ? "Analyzing your browser fingerprint..."
-          : `Scan ID ${report.meta.scan_id.slice(0, 8)} • Updated ${new Date(report.meta.timestamp * 1000).toLocaleString()}`
+          ? "Scanning your browser fingerprint..."
+          : `Scan #${report.meta.scan_id.slice(0, 8)} • ${new Date(report.meta.timestamp * 1000).toLocaleString()}`
       }
       actions={<ScanConsole isScanning={isScanning} />}
     >
