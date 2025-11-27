@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sampleReport } from '@/lib/sample-report';
 
-export const runtime = 'edge';
-
 const workerOrigin = process.env.WORKER_ORIGIN;
 
 export async function GET() {
