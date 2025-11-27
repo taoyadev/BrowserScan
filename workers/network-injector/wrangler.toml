@@ -1,0 +1,15 @@
+name = "browserscan-network-injector"
+main = "src/worker.ts"
+compatibility_date = "2024-11-27"
+
+[vars]
+ENVIRONMENT = "dev"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "browserscan-db"
+database_id = "fee2d3e0-6e46-4add-a2f3-d2a5c681a097"
+
+[[r2_buckets]]
+binding = "REPORTS_BUCKET"
+bucket_name = "browserscan-reports"

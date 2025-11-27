@@ -1,0 +1,16 @@
+node_modules
+.next
+.vscode
+.DS_Store
+.env*
+.env.local
+dist
+coverage
+reports
+.vercel
+wrangler-state.json
+*.log
+*.tsbuildinfo
+.wrangler
+.turbo
+.cache
