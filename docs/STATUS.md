@@ -60,7 +60,7 @@ _更新：2025-11-27_
 | --- | --- |
 | Web App | https://browserscan-web.7and1.workers.dev |
 | API Worker | https://browserscan-network-injector.7and1.workers.dev |
-| GitHub Repo | https://github.com/7and1/BrowserScan.org |
+| GitHub Repo | https://github.com/7and1/BrowserScan |
 
 ### Cloudflare Resources
 | Resource | ID/Name |
