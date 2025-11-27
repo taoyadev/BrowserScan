@@ -24,5 +24,7 @@ jobs:
           cache: 'npm'
       - run: npm install
       - run: npm run pages:build
+        working-directory: apps/web
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy .vercel/output/static --project-name=browserscan-web
+        run: npx opennextjs-cloudflare deploy
+        working-directory: apps/web
