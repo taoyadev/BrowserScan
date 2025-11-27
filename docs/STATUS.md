@@ -40,4 +40,45 @@ _更新：2025-11-27_
 - 集成截图/trace artifact 上传  
 - 在 release checklist 中强制执行并附证据 | 暂无 |
 
+| 2025-11-27 | **Production Deployment** | - 创建 GitHub 仓库并推送代码
+- 配置 GitHub Secrets (CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID)
+- 配置 GitHub Variables (NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_WORKER_ORIGIN)
+- 部署 API Worker: `browserscan-network-injector` → https://browserscan-network-injector.7and1.workers.dev
+- 部署 Web App: `browserscan-web` → https://browserscan-web.7and1.workers.dev
+- Cloudflare D1 数据库已迁移 (browserscan-db)
+- Cloudflare R2 存储桶已创建 (browserscan-reports)
+- Worker Secrets 已配置 (IPINFO_TOKEN, TURNSTILE_SITE_KEY, TURNSTILE_SECRET_KEY) | - 配置自定义域名
+- 监控 Worker 日志
+- 生产环境冒烟测试 | 暂无 |
+
 > 每次迭代结束更新此表，并补充详细日志（需要时可追加章节 `## 日志`）。
+
+## 部署信息
+
+### 生产环境 URLs
+| Service | URL |
+| --- | --- |
+| Web App | https://browserscan-web.7and1.workers.dev |
+| API Worker | https://browserscan-network-injector.7and1.workers.dev |
+| GitHub Repo | https://github.com/7and1/BrowserScan.org |
+
+### Cloudflare Resources
+| Resource | ID/Name |
+| --- | --- |
+| D1 Database | `browserscan-db` (fee2d3e0-6e46-4add-a2f3-d2a5c681a097) |
+| R2 Bucket | `browserscan-reports` |
+| Pages Project | `browserscan-web` |
+| Worker | `browserscan-network-injector` |
+
+### API Endpoints
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/api/health` | GET | Health check |
+| `/api/scan/start` | POST | Start new scan |
+| `/api/scan/collect` | POST | Collect fingerprints |
+| `/api/scan/:id` | GET | Get scan by ID |
+| `/api/scan/latest` | GET | Get latest scan |
+| `/api/scan/:id/pdf` | POST | Generate PDF report |
+| `/api/tools/ip-lookup` | POST | IP intelligence lookup |
+| `/api/tools/port-scan` | POST | Port scan check |
+| `/api/tools/turnstile-verify` | POST | Turnstile verification |
