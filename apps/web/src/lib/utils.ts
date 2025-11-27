@@ -12,11 +12,3 @@ export const gradeColors: Record<string, string> = {
   C: 'text-amber-400',
   F: 'text-rose-400'
 };
-
-export const statusToneMap = {
-  PASS: 'safe',
-  FAIL: 'risk',
-  WARN: 'warn',
-  SAFE: 'safe',
-  LEAK: 'risk'
-} as const;
