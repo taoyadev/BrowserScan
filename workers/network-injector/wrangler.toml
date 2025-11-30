@@ -8,7 +8,7 @@ ENVIRONMENT = "dev"
 [[d1_databases]]
 binding = "DB"
 database_name = "browserscan-db"
-database_id = "fee2d3e0-6e46-4add-a2f3-d2a5c681a097"
+database_id = "103ec479-a89b-46c7-acf7-f70bfd9bb926"
 
 [[r2_buckets]]
 binding = "REPORTS_BUCKET"
