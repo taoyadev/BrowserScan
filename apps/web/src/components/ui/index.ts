@@ -1,2 +1,2 @@
-export { Card, CardTitle, CardValue } from './card';
+export { Card, CardTitle } from './card';
 export { StatusDot } from './status-dot';

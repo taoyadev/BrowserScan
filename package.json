@@ -19,6 +19,7 @@
     "lint": "npm run lint --workspace apps/web",
     "test": "npm run test --workspace apps/web",
     "test:worker": "npm run test --workspace workers/network-injector",
+    "test:e2e": "npm run test:e2e --workspace apps/web",
     "typecheck": "npm run typecheck --workspace apps/web",
     "pages:build": "npm run pages:build --workspace apps/web",
     "deploy:pages": "npm run deploy --workspace apps/web",

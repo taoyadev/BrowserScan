@@ -174,6 +174,338 @@ export default function CookieCheckPage() {
       >
         Refresh Analysis
       </button>
+
+      {/* SEO Content Section */}
+      <section className="mt-12 space-y-8 border-t border-zinc-800 pt-10">
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            What Are Browser Cookies? (Not the Chocolate Chip Kind)
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Let me explain cookies in the simplest way possible. When you visit a website, that site can store
+            a tiny text file on your computer. That file is a cookie. It is like a name tag the website gives
+            you so it can remember who you are next time you visit. Without cookies, you would have to log in
+            to every website every single time you visit. Your shopping cart would empty every time you clicked
+            a new page. The web would be basically unusable.
+          </p>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Cookies were invented in 1994 by a Netscape engineer named Lou Montulli. He just wanted to build a
+            shopping cart that actually worked. Thirty years later, cookies have become one of the most controversial
+            technologies on the internet. Not because of what they do, but because of how they have been weaponized
+            for tracking and surveillance advertising.
+          </p>
+        </div>
+
+        {/* Statistics Table */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            The Cookie Tracking Problem: Real Numbers
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Here is the data that should concern you. This is not speculation - these are verified statistics
+            from cookie consent research:
+          </p>
+          <div className="overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/30">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-zinc-800">
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-zinc-400">Finding</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-zinc-400">Percentage</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-zinc-400">Source</th>
+                </tr>
+              </thead>
+              <tbody className="text-zinc-300">
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">Websites deploying tracking cookies without consent</td>
+                  <td className="px-4 py-3 font-mono text-rose-400">92%</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Cookiebot/Ebiquity 2024</td>
+                </tr>
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">Sites violating cookie consent requirements</td>
+                  <td className="px-4 py-3 font-mono text-rose-400">84%</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">17K Website Survey</td>
+                </tr>
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">Websites using third-party cookies</td>
+                  <td className="px-4 py-3 font-mono text-amber-400">40%+</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Privacy Journal 2024</td>
+                </tr>
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">Cookies dedicated to tracking/advertising</td>
+                  <td className="px-4 py-3 font-mono text-amber-400">27%</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Deloitte Research</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">Marketers relying on third-party cookies</td>
+                  <td className="px-4 py-3 font-mono text-sky-400">75%</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Industry Survey 2024</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-zinc-500">
+            Think about that: 92% of websites drop tracking cookies before you even click anything. 84% of sites
+            violate consent requirements. The &quot;Accept Cookies&quot; banner is often just theater - the tracking already started.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            First-Party vs Third-Party Cookies: Why It Matters
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            This is the most important distinction to understand. First-party cookies come from the site you are
+            visiting. If you are on amazon.com, Amazon sets first-party cookies. These keep you logged in, remember
+            your cart, store your preferences. Blocking them breaks the site. They are generally fine.
+          </p>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Third-party cookies come from other domains embedded in the page. That Facebook Like button on a news
+            site? It is loading Facebook code, which drops a Facebook cookie on your browser. Now Facebook knows
+            you visited that news site. Visit another site with a Like button? Facebook knows that too. This is
+            how they build a profile of every website you visit across the entire internet.
+          </p>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
+              <h3 className="mb-2 text-sm font-medium text-emerald-400">First-Party (Usually OK)</h3>
+              <ul className="text-xs text-zinc-500 space-y-1">
+                <li>• Domain matches the site URL</li>
+                <li>• Enables login sessions and preferences</li>
+                <li>• Cannot track you across other sites</li>
+                <li>• Breaking them breaks the website</li>
+              </ul>
+            </div>
+            <div className="rounded-lg border border-rose-500/30 bg-rose-500/5 p-4">
+              <h3 className="mb-2 text-sm font-medium text-rose-400">Third-Party (Privacy Risk)</h3>
+              <ul className="text-xs text-zinc-500 space-y-1">
+                <li>• Domain differs from the site URL</li>
+                <li>• Used for cross-site tracking</li>
+                <li>• Builds profiles across the web</li>
+                <li>• Safari/Firefox block by default</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            Cookie Security Attributes (The Technical Stuff Made Simple)
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Cookies have security flags that control how they behave. Understanding these helps you know
+            whether a cookie is properly secured:
+          </p>
+          <div className="space-y-4">
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/30 p-4">
+              <h3 className="mb-2 text-sm font-medium text-emerald-400">Secure Flag</h3>
+              <p className="text-xs text-zinc-500">
+                When this is set, the cookie only travels over HTTPS (encrypted connections). Without it,
+                someone on the same WiFi network could intercept your session cookie and hijack your account.
+                If you are on a coffee shop WiFi and the site uses cookies without the Secure flag, anyone
+                nearby could steal your login. This is called session hijacking, and it is trivially easy
+                on non-secure cookies.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/30 p-4">
+              <h3 className="mb-2 text-sm font-medium text-sky-400">HttpOnly Flag</h3>
+              <p className="text-xs text-zinc-500">
+                This flag makes the cookie invisible to JavaScript. Why does that matter? If a hacker finds
+                an XSS vulnerability on a site (where they can inject their JavaScript), they could steal
+                your cookies. But if the cookie is HttpOnly, JavaScript cannot read it. Fun fact: if this
+                tool can see a cookie, it is NOT HttpOnly - which is actually a security concern for sensitive cookies.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/30 p-4">
+              <h3 className="mb-2 text-sm font-medium text-amber-400">SameSite Attribute</h3>
+              <p className="text-xs text-zinc-500">
+                This controls whether the cookie travels with requests from other sites. &quot;Strict&quot; means
+                the cookie never leaves its home site. &quot;Lax&quot; allows it on direct navigation but not
+                embedded requests. &quot;None&quot; sends it everywhere (requires Secure flag). This is your defense
+                against CSRF attacks where a malicious site tricks your browser into making requests to
+                a site you are logged into.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            The GDPR Cookie Fine Reality
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Europe does not mess around with cookie consent violations. Some of the biggest tech companies
+            have been hit with massive fines:
+          </p>
+          <div className="overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/30">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-zinc-800">
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-zinc-400">Company</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-zinc-400">Fine</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-zinc-400">Violation</th>
+                </tr>
+              </thead>
+              <tbody className="text-zinc-300">
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">LinkedIn</td>
+                  <td className="px-4 py-3 font-mono text-rose-400">€310M</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Behavioral targeting without consent (2024)</td>
+                </tr>
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">Google</td>
+                  <td className="px-4 py-3 font-mono text-rose-400">€150M</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">No easy way to refuse cookies (2021)</td>
+                </tr>
+                <tr className="border-b border-zinc-800/50">
+                  <td className="px-4 py-3">Amazon</td>
+                  <td className="px-4 py-3 font-mono text-rose-400">€35M</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Placing ad cookies without consent</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">Yahoo</td>
+                  <td className="px-4 py-3 font-mono text-amber-400">€10M</td>
+                  <td className="px-4 py-3 text-xs text-zinc-500">Tracking despite rejection (2023)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-zinc-500">
+            Total GDPR fines have exceeded €5.65 billion as of 2024, with 2,245 enforcement actions recorded.
+            Cookie consent is not optional in Europe - it is the law.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            Session vs Persistent Cookies
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-emerald-400">Session Cookies</h3>
+              <p className="text-xs text-zinc-500">
+                These live only in your browser&apos;s memory. Close the browser, they are gone. They keep you
+                logged in during your visit but cannot track you long-term. These are the &quot;good&quot; cookies
+                in most cases. When you see &quot;expires: Session&quot;, that is what this means.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-amber-400">Persistent Cookies</h3>
+              <p className="text-xs text-zinc-500">
+                These have an expiration date and survive browser restarts. A &quot;remember me&quot; login cookie
+                might last 30 days. But tracking cookies? Some are set to expire in 2 years or more.
+                The longer the expiration, the more tracking potential.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            What This Tool Can and Cannot See
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            I want to be completely transparent here. This tool runs JavaScript in your browser. That means
+            it can only see cookies that are NOT marked HttpOnly. If a cookie has the HttpOnly flag (which
+            security-sensitive cookies should), JavaScript cannot access it, and neither can we.
+          </p>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            This is actually a good thing. If we could see your session cookies, so could any malicious
+            JavaScript on any compromised website. The fact that we cannot see them means they are properly
+            protected. To see all cookies including HttpOnly ones, check your browser&apos;s developer tools
+            (F12 → Application → Cookies in Chrome).
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            How to Protect Yourself from Cookie Tracking
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-emerald-400">Block Third-Party Cookies</h3>
+              <p className="text-xs text-zinc-500">
+                Every modern browser lets you block third-party cookies. Safari and Firefox do this by
+                default. Chrome users need to enable it manually. This single setting stops most cross-site
+                tracking while keeping first-party functionality working.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-sky-400">Use Privacy Browsers</h3>
+              <p className="text-xs text-zinc-500">
+                Brave blocks trackers by default. Firefox with Enhanced Tracking Protection. Safari with
+                Intelligent Tracking Prevention. These browsers fight tracking out of the box without
+                you having to configure anything.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-amber-400">Clear Cookies Regularly</h3>
+              <p className="text-xs text-zinc-500">
+                Set your browser to clear cookies on exit. Yes, you will have to log in again, but
+                persistent trackers lose their grip. Extensions like Cookie AutoDelete can clear
+                cookies automatically when you close tabs.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-violet-400">Use Container Tabs</h3>
+              <p className="text-xs text-zinc-500">
+                Firefox Multi-Account Containers let you isolate different sites in different
+                &quot;containers&quot;. Facebook in one container, shopping in another. Cookies cannot cross
+                containers, so tracking cannot follow you between them.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            The Death of Third-Party Cookies
+          </h2>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Here is the big news: third-party cookies are dying. Safari killed them years ago. Firefox
+            blocks them. And Chrome - which holds 65% of the browser market - is phasing them out through
+            their Privacy Sandbox initiative. Google started blocking them for 1% of Chrome users in Q1 2024,
+            with full deprecation planned (though timelines have shifted).
+          </p>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            What replaces them? New APIs like Topics (interest-based targeting without cross-site tracking)
+            and Attribution Reporting (conversion tracking without identifiers). The ad industry is scrambling
+            to adapt. For users, this means better privacy by default. But do not celebrate too hard - new
+            tracking methods like fingerprinting are already filling the gap. That is why tools like BrowserScan
+            exist.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-zinc-100">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-zinc-200">Are all cookies bad?</h3>
+              <p className="text-xs text-zinc-500">
+                No. First-party cookies that enable site functionality are necessary and generally harmless.
+                The problem is third-party tracking cookies that follow you across the web. Do not block all
+                cookies - you will break the internet. Be selective.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-zinc-200">Why do sites ask me to accept cookies?</h3>
+              <p className="text-xs text-zinc-500">
+                GDPR (in Europe) and similar laws require informed consent before placing non-essential cookies.
+                The irony? 84% of sites violate these requirements anyway. The banner is often just legal
+                theater while tracking happens regardless.
+              </p>
+            </div>
+            <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/20 p-4">
+              <h3 className="mb-2 text-sm font-medium text-zinc-200">Can cookies give me viruses?</h3>
+              <p className="text-xs text-zinc-500">
+                No. Cookies are just text data. They cannot execute code, install software, or directly harm
+                your computer. The privacy risk is the real concern - not malware. That said, stolen session
+                cookies can let attackers into your accounts, which is its own kind of damage.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

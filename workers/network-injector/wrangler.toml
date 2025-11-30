@@ -13,3 +13,9 @@ database_id = "fee2d3e0-6e46-4add-a2f3-d2a5c681a097"
 [[r2_buckets]]
 binding = "REPORTS_BUCKET"
 bucket_name = "browserscan-reports"
+
+# Rate limiting KV namespace (create with: wrangler kv:namespace create "RATE_LIMIT_KV")
+# Uncomment and add ID after creation:
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT_KV"
+# id = "YOUR_KV_NAMESPACE_ID"

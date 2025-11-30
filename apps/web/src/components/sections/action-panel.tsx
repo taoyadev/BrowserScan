@@ -58,41 +58,44 @@ export function ActionPanel({ scanId, onRescan, isScanning }: ActionPanelProps) 
       <div className="mt-4 space-y-3">
         {/* Export PDF */}
         <button
+          type="button"
           onClick={handleExportPdf}
           disabled={!scanId}
-          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-emerald-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-emerald-500/40 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           Export PDF
-          <span className="text-emerald-400">→</span>
+          <span className="text-emerald-400" aria-hidden="true">→</span>
         </button>
 
         {/* Share Link */}
         <button
+          type="button"
           onClick={handleShare}
           disabled={!scanId}
-          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-sky-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-sky-500/40 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           Share Link
-          <span className="text-sky-400">→</span>
+          <span className="text-sky-400" aria-hidden="true">→</span>
         </button>
 
         {/* Re-Scan */}
         <button
+          type="button"
           onClick={handleRescan}
           disabled={isScanning}
-          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-amber-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-amber-500/40 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           {isScanning ? 'Scanning...' : 'Re-Scan'}
-          <span className="text-amber-400">{isScanning ? '⟳' : '→'}</span>
+          <span className="text-amber-400" aria-hidden="true">{isScanning ? '⟳' : '→'}</span>
         </button>
 
         {/* Link to Tools */}
         <Link
           href="/tools"
-          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-zinc-500/40"
+          className="flex w-full items-center justify-between rounded-xl border border-white/5 px-4 py-3 text-sm text-zinc-200 transition hover:border-zinc-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
         >
           More Tools
-          <span className="text-zinc-400">→</span>
+          <span className="text-zinc-400" aria-hidden="true">→</span>
         </Link>
       </div>
     </Card>

@@ -9,18 +9,32 @@ const toneClasses: Record<Tone, string> = {
   info: 'bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)]'
 };
 
+const toneLabels: Record<Tone, string> = {
+  safe: 'Safe',
+  risk: 'Risk detected',
+  warn: 'Warning',
+  info: 'Information'
+};
+
 interface StatusDotProps {
   tone?: Tone;
   animated?: boolean;
+  label?: string;
 }
 
-export function StatusDot({ tone = 'info', animated = true }: StatusDotProps) {
+export function StatusDot({ tone = 'info', animated = true, label }: StatusDotProps) {
+  const ariaLabel = label || toneLabels[tone];
+
   return (
-    <span className="relative flex h-3 w-3 items-center justify-center" role="status" aria-live="polite">
+    <span
+      className="relative flex h-3 w-3 items-center justify-center"
+      role="status"
+      aria-label={ariaLabel}
+    >
       {animated ? (
-        <span className={cn('absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping', toneClasses[tone])} />
+        <span className={cn('absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping', toneClasses[tone])} aria-hidden="true" />
       ) : null}
-      <span className={cn('relative inline-flex h-3 w-3 rounded-full', toneClasses[tone])} />
+      <span className={cn('relative inline-flex h-3 w-3 rounded-full', toneClasses[tone])} aria-hidden="true" />
     </span>
   );
 }

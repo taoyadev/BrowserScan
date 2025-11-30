@@ -11,41 +11,68 @@ import {
   generateScanId
 } from './services/fingerprint';
 import { generateReportHtml, generatePdfFilename } from './services/pdf';
+import {
+  analyzeBehavior,
+  hashIp,
+  generateSessionId,
+  type BehaviorSession,
+  type BehaviorAnalysis,
+  type RecaptchaSimulation
+} from './services/simulation';
+import { performLeakTest, type LeakTestResult } from './services/leak-detector';
+import {
+  validateBody,
+  validateQuery,
+  getValidatedBody,
+  scanRateLimit,
+  toolRateLimit,
+  strictRateLimit,
+} from './middleware';
+import {
+  ClientFingerprintSchema,
+  IpLookupSchema,
+  PortScanSchema,
+  LeakTestSchema,
+  WebRTCCheckSchema,
+  TurnstileVerifySchema,
+  RecaptchaSimulationSchema,
+  BehaviorSessionSchema,
+  type ClientFingerprintInput,
+  type IpLookupInput,
+  type PortScanInput,
+  type LeakTestInput,
+  type WebRTCCheckInput,
+  type TurnstileVerifyInput,
+  type RecaptchaSimulationInput,
+  type BehaviorSessionInput,
+} from './schemas';
 
 interface Env {
   DB: D1Database;
   REPORTS_BUCKET: R2Bucket;
+  RATE_LIMIT_KV?: KVNamespace;
   IPINFO_TOKEN: string;
   TURNSTILE_SITE_KEY: string;
   TURNSTILE_SECRET_KEY: string;
   ENVIRONMENT: string;
 }
 
-// Client fingerprint payload from browser
-interface ClientFingerprint {
-  scan_id: string;
-  canvas_hash: string;
-  webgl_vendor: string;
-  webgl_renderer: string;
-  screen: string;
-  concurrency: number;
-  memory: number;
-  fonts_hash: string;
-  timezone: string;
-  languages: string[];
-  webrtc_ips: string[];
-  dns_servers: string[];
-  audio_hash?: string;
-  plugins?: string[];
-  is_webdriver?: boolean;
-  is_headless?: boolean;
-}
-
 const app = new Hono<{ Bindings: Env }>();
 
-// CORS middleware
+// CORS middleware - restrict in production
 app.use('*', cors({
-  origin: '*',
+  origin: (origin, c) => {
+    // Allow any origin in development/test
+    if (c.env.ENVIRONMENT !== 'production') {
+      return origin || '*';
+    }
+    // Production: restrict to allowed domains
+    const allowedOrigins = [
+      'https://browserscan.org',
+      'https://www.browserscan.org'
+    ];
+    return allowedOrigins.includes(origin || '') ? origin : allowedOrigins[0];
+  },
   allowMethods: ['GET', 'POST', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -72,7 +99,7 @@ app.get('/api/health', (c) => {
 /**
  * Start a new scan - creates initial record and returns scan_id
  */
-app.post('/api/scan/start', async (c) => {
+app.post('/api/scan/start', scanRateLimit, async (c) => {
   try {
     const scanId = generateScanId();
     const timestamp = Math.floor(Date.now() / 1000);
@@ -109,14 +136,10 @@ app.post('/api/scan/start', async (c) => {
 /**
  * Collect fingerprints from client and build complete report
  */
-app.post('/api/scan/collect', async (c) => {
+app.post('/api/scan/collect', scanRateLimit, validateBody(ClientFingerprintSchema), async (c) => {
   try {
-    const body = await c.req.json<ClientFingerprint>();
+    const body = getValidatedBody<ClientFingerprintInput>(c);
     const { scan_id } = body;
-
-    if (!scan_id) {
-      return c.json({ status: 'error', message: 'scan_id required' }, 400);
-    }
 
     // Extract server-side data
     const cfData = extractCloudflareData(c.req.raw);
@@ -330,9 +353,9 @@ app.post('/api/scan/:id/pdf', async (c) => {
 /**
  * IP Lookup tool
  */
-app.post('/api/tools/ip-lookup', async (c) => {
+app.post('/api/tools/ip-lookup', toolRateLimit, validateBody(IpLookupSchema), async (c) => {
   try {
-    const body = await c.req.json<{ ip?: string }>();
+    const body = getValidatedBody<IpLookupInput>(c);
     const ip = body.ip || c.req.header('cf-connecting-ip') || '8.8.8.8';
 
     const intel = await lookupIpInfo(ip, c.env.IPINFO_TOKEN);
@@ -365,9 +388,9 @@ app.post('/api/tools/ip-lookup', async (c) => {
 /**
  * Port scan tool (checks if common ports are accessible)
  */
-app.post('/api/tools/port-scan', async (c) => {
+app.post('/api/tools/port-scan', toolRateLimit, validateBody(PortScanSchema), async (c) => {
   try {
-    const body = await c.req.json<{ ip?: string; ports?: number[] }>();
+    const body = getValidatedBody<PortScanInput>(c);
     const ip = body.ip || c.req.header('cf-connecting-ip') || '';
     const ports = body.ports || [22, 80, 443, 3389, 8080];
 
@@ -396,14 +419,10 @@ app.post('/api/tools/port-scan', async (c) => {
 /**
  * Turnstile verification
  */
-app.post('/api/tools/turnstile-verify', async (c) => {
+app.post('/api/tools/turnstile-verify', strictRateLimit, validateBody(TurnstileVerifySchema), async (c) => {
   try {
-    const body = await c.req.json<{ token: string }>();
+    const body = getValidatedBody<TurnstileVerifyInput>(c);
     const { token } = body;
-
-    if (!token) {
-      return c.json({ status: 'error', message: 'Token required' }, 400);
-    }
 
     const ip = c.req.header('cf-connecting-ip') || '';
 
@@ -436,6 +455,215 @@ app.post('/api/tools/turnstile-verify', async (c) => {
   } catch (error) {
     console.error('turnstile-verify error:', error);
     return c.json({ status: 'error', message: 'Verification failed' }, 500);
+  }
+});
+
+// ============================================
+// Simulation Endpoints
+// ============================================
+
+/**
+ * Save reCAPTCHA simulation score
+ */
+app.post('/api/simulation/recaptcha', toolRateLimit, validateBody(RecaptchaSimulationSchema), async (c) => {
+  try {
+    const body = getValidatedBody<RecaptchaSimulationInput>(c);
+    const { score, action } = body;
+
+    const ip = c.req.header('cf-connecting-ip') || 'unknown';
+    const ipHash = hashIp(ip, 'recaptcha-salt');
+    const timestamp = Math.floor(Date.now() / 1000);
+    const id = generateSessionId();
+
+    // Store in D1 (create table if needed via migration)
+    try {
+      await c.env.DB.prepare(`
+        INSERT INTO recaptcha_simulations (id, score, timestamp, ip_hash, action)
+        VALUES (?1, ?2, ?3, ?4, ?5)
+      `).bind(id, score, timestamp, ipHash, action).run();
+    } catch (dbError) {
+      // Table might not exist yet, continue anyway
+      console.warn('recaptcha simulation DB error (table may not exist):', dbError);
+    }
+
+    // Determine verdict based on score
+    let verdict: string;
+    let riskLevel: string;
+    if (score >= 0.7) {
+      verdict = 'Likely human';
+      riskLevel = 'low';
+    } else if (score >= 0.3) {
+      verdict = 'Suspicious activity';
+      riskLevel = 'medium';
+    } else {
+      verdict = 'Likely bot';
+      riskLevel = 'high';
+    }
+
+    return c.json({
+      status: 'ok',
+      data: {
+        id,
+        score,
+        timestamp,
+        action,
+        verdict,
+        risk_level: riskLevel,
+        interpretation: {
+          '0.0-0.3': 'Very likely a bot - block or challenge',
+          '0.3-0.7': 'Suspicious - additional verification recommended',
+          '0.7-1.0': 'Likely legitimate user - allow'
+        }
+      }
+    });
+  } catch (error) {
+    console.error('simulation/recaptcha error:', error);
+    return c.json({ status: 'error', message: 'Simulation failed' }, 500);
+  }
+});
+
+/**
+ * Analyze behavioral telemetry data
+ */
+app.post('/api/simulation/behavior', toolRateLimit, validateBody(BehaviorSessionSchema), async (c) => {
+  try {
+    const body = getValidatedBody<BehaviorSessionInput>(c);
+
+    if (body.events.length < 5) {
+      return c.json({
+        status: 'ok',
+        data: {
+          session_id: body.session_id || generateSessionId(),
+          timestamp: Math.floor(Date.now() / 1000),
+          verdict: 'UNKNOWN',
+          human_probability: 50,
+          bot_probability: 50,
+          message: 'Insufficient data for analysis (minimum 5 events required)',
+          scores: []
+        }
+      });
+    }
+
+    // Ensure session has required fields
+    const session: BehaviorSession = {
+      session_id: body.session_id || generateSessionId(),
+      events: body.events,
+      start_time: body.start_time || body.events[0]?.timestamp || Date.now(),
+      end_time: body.end_time || body.events[body.events.length - 1]?.timestamp || Date.now()
+    };
+
+    // Analyze the behavior
+    const analysis: BehaviorAnalysis = analyzeBehavior(session);
+
+    // Store in D1 (optional, for analytics)
+    try {
+      const ip = c.req.header('cf-connecting-ip') || 'unknown';
+      const ipHash = hashIp(ip, 'behavior-salt');
+
+      await c.env.DB.prepare(`
+        INSERT INTO behavior_sessions (
+          id, timestamp, ip_hash, verdict, human_probability, bot_probability,
+          mouse_entropy, click_entropy, keyboard_entropy, event_count
+        ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+      `).bind(
+        analysis.session_id,
+        analysis.timestamp,
+        ipHash,
+        analysis.verdict,
+        analysis.human_probability,
+        analysis.bot_probability,
+        analysis.mouse_entropy,
+        analysis.click_entropy,
+        analysis.keyboard_entropy,
+        session.events.length
+      ).run();
+    } catch (dbError) {
+      // Table might not exist yet, continue anyway
+      console.warn('behavior session DB error (table may not exist):', dbError);
+    }
+
+    return c.json({ status: 'ok', data: analysis });
+  } catch (error) {
+    console.error('simulation/behavior error:', error);
+    return c.json({ status: 'error', message: 'Analysis failed' }, 500);
+  }
+});
+
+/**
+ * Get behavior session history (for dashboard)
+ */
+app.get('/api/simulation/behavior/history', async (c) => {
+  try {
+    const ip = c.req.header('cf-connecting-ip') || 'unknown';
+    const ipHash = hashIp(ip, 'behavior-salt');
+
+    const results = await c.env.DB.prepare(`
+      SELECT id, timestamp, verdict, human_probability, bot_probability, event_count
+      FROM behavior_sessions
+      WHERE ip_hash = ?
+      ORDER BY timestamp DESC
+      LIMIT 10
+    `).bind(ipHash).all();
+
+    return c.json({
+      status: 'ok',
+      data: results.results || []
+    });
+  } catch (error) {
+    console.error('behavior/history error:', error);
+    return c.json({ status: 'ok', data: [] });
+  }
+});
+
+// ============================================
+// Leak Test Endpoints
+// ============================================
+
+/**
+ * Comprehensive leak test (WebRTC, DNS, IPv6)
+ */
+app.post('/api/tools/leak-test', toolRateLimit, validateBody(LeakTestSchema), async (c) => {
+  try {
+    const body = getValidatedBody<LeakTestInput>(c);
+    const publicIp = c.req.header('cf-connecting-ip') || '127.0.0.1';
+
+    const result: LeakTestResult = await performLeakTest(
+      publicIp,
+      body.webrtc_ips || [],
+      body.dns_servers || [],
+      body.ipv6_address ?? null,
+      c.env.IPINFO_TOKEN
+    );
+
+    return c.json({ status: 'ok', data: result });
+  } catch (error) {
+    console.error('leak-test error:', error);
+    return c.json({ status: 'error', message: 'Leak test failed' }, 500);
+  }
+});
+
+/**
+ * Quick WebRTC-only leak check
+ */
+app.post('/api/tools/webrtc-check', toolRateLimit, validateBody(WebRTCCheckSchema), async (c) => {
+  try {
+    const body = getValidatedBody<WebRTCCheckInput>(c);
+    const publicIp = c.req.header('cf-connecting-ip') || '127.0.0.1';
+
+    // Use inline detection for quick check
+    const result = detectWebRTCLeak(publicIp, body.webrtc_ips);
+
+    return c.json({
+      status: 'ok',
+      data: {
+        public_ip: publicIp,
+        ...result,
+        is_leaked: result.status === 'LEAK'
+      }
+    });
+  } catch (error) {
+    console.error('webrtc-check error:', error);
+    return c.json({ status: 'error', message: 'WebRTC check failed' }, 500);
   }
 });
 

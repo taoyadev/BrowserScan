@@ -23,9 +23,3 @@ export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLPara
     <p className={cn('text-xs uppercase tracking-[0.3em] text-zinc-500', className)} {...props} />
   );
 }
-
-export function CardValue({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn('font-mono text-lg text-zinc-100', className)} {...props} />
-  );
-}

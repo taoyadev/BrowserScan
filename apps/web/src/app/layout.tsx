@@ -4,6 +4,7 @@ import './globals.css';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { QueryProvider } from '@/components/layout/query-provider';
+import { ToastProvider } from '@/components/ui/toast';
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -16,21 +17,71 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'BrowserScan — Browser Trust Score Analysis',
-	description: 'Advanced browser fingerprinting and trust score analysis. Detect bots, leaks, and spoofing with JA3/JA4, WebRTC detection, and comprehensive diagnostics.',
+	title: {
+		default: 'BrowserScan — Browser Fingerprint & Trust Score Analyzer | Free Online Tool',
+		template: '%s | BrowserScan',
+	},
+	description: 'Free browser fingerprint analyzer and trust score calculator. Detect VPNs, proxies, WebRTC leaks, DNS leaks, bot signatures, and spoofing attempts with real-time JA3/JA4 TLS fingerprinting and 50+ detection signals.',
 	metadataBase: new URL('https://browserscan.org'),
-	keywords: ['browser fingerprint', 'trust score', 'bot detection', 'webrtc leak', 'ip lookup', 'fingerprint analysis'],
+	keywords: [
+		'browser fingerprint',
+		'browser fingerprint test',
+		'trust score',
+		'bot detection',
+		'webrtc leak test',
+		'dns leak test',
+		'ip lookup',
+		'fingerprint analysis',
+		'canvas fingerprint',
+		'webgl fingerprint',
+		'ja3 fingerprint',
+		'ja4 fingerprint',
+		'vpn detection',
+		'proxy detection',
+		'browser privacy test',
+		'anti-detect browser test',
+	],
+	authors: [{ name: 'BrowserScan', url: 'https://browserscan.org' }],
+	creator: 'BrowserScan',
+	publisher: 'BrowserScan',
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			'max-video-preview': -1,
+			'max-image-preview': 'large',
+			'max-snippet': -1,
+		},
+	},
 	openGraph: {
-		title: 'BrowserScan — Browser Trust Score Analysis',
-		description: 'Advanced browser fingerprinting and trust score analysis. Detect bots, leaks, and spoofing.',
+		title: 'BrowserScan — Free Browser Fingerprint & Trust Score Analyzer',
+		description: 'Analyze your browser fingerprint and get a trust score. Detect WebRTC leaks, DNS leaks, VPNs, proxies, and bot signatures in real-time.',
 		type: 'website',
 		siteName: 'BrowserScan',
+		locale: 'en_US',
+		url: 'https://browserscan.org',
+		images: [
+			{
+				url: '/og-image.png',
+				width: 1200,
+				height: 630,
+				alt: 'BrowserScan - Browser Fingerprint & Trust Score Analyzer',
+			},
+		],
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'BrowserScan — Browser Trust Score Analysis',
-		description: 'Advanced browser fingerprinting and trust score analysis.',
+		title: 'BrowserScan — Browser Fingerprint & Trust Score Analyzer',
+		description: 'Free browser fingerprint test. Check your trust score, detect leaks, and see what websites see about you.',
+		creator: '@browserscan',
+		images: ['/og-image.png'],
 	},
+	alternates: {
+		canonical: 'https://browserscan.org',
+	},
+	category: 'technology',
 };
 
 export default function RootLayout({
@@ -41,15 +92,22 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
-				<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+				<link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
+				<link rel="icon" href="/favicon.ico" />
+				<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+				<link rel="manifest" href="/site.webmanifest" />
+				<meta name="theme-color" content="#10b981" media="(prefers-color-scheme: light)" />
+				<meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<QueryProvider>
-					<div className="flex min-h-screen flex-col bg-[#09090b] text-zinc-100">
-						<Header />
-						<main className="flex-1">{children}</main>
-						<Footer />
-					</div>
+					<ToastProvider>
+						<div className="flex min-h-screen flex-col bg-[#09090b] text-zinc-100">
+							<Header />
+							<main className="flex-1">{children}</main>
+							<Footer />
+						</div>
+					</ToastProvider>
 				</QueryProvider>
 			</body>
 		</html>

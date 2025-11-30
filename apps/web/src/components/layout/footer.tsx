@@ -22,6 +22,7 @@ const footerLinks = {
   resources: [
     { href: '/knowledge/methodology', label: 'Methodology' },
     { href: '/knowledge/privacy', label: 'Privacy Policy' },
+    { href: 'mailto:Privacy@BrowserScan.org', label: 'Contact Us' },
     { href: 'https://github.com/7and1/BrowserScan', label: 'GitHub', external: true }
   ]
 };
